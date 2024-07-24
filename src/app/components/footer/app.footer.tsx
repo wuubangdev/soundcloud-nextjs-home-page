@@ -23,7 +23,7 @@ const AppFooter = () => {
                 }}
             >
                 <AudioPlayer
-                    src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3 `}
                     volume={0.5}
                     style={{
                         boxShadow: "unset",
