@@ -2,7 +2,7 @@
 import { AppBar, Container } from "@mui/material";
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import { useHasMounted } from "../utils/customHook";
+import { useHasMounted } from "@/utils/customHook";
 const AppFooter = () => {
     const hasMounted = useHasMounted();
     if (!hasMounted) return (<></>)
