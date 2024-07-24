@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import { Settings } from "react-slick";
 import { Box, Button, Divider } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-
+import Link from "next/link";
 interface IProps {
     title: string;
     data: ITrackTop[];
@@ -88,7 +88,9 @@ const MainSlider = (props: IProps) => {
                                 src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
                                 alt=""
                             />
-                            <h4>{track.title}</h4>
+                            <Link href={`/track/${track._id}?audio=${track.trackUrl}`}>
+                                <h4>{track.title}</h4>
+                            </Link>
                             <h4>{track.category}</h4>
                         </div>
                     )
