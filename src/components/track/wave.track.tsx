@@ -6,6 +6,7 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import "./wave.scss"
+import { Tooltip } from "@mui/material";
 
 const WaveTrack = () => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -92,6 +93,33 @@ const WaveTrack = () => {
         const paddedSeconds = `0${secondsRemainder}`.slice(-2)
         return `${minutes}:${paddedSeconds}`
     }
+    const arrComments = [
+        {
+            id: 1,
+            avatar: "http://localhost:8000/images/chill1.png",
+            moment: 10,
+            user: "username 1",
+            content: "just a comment1"
+        },
+        {
+            id: 2,
+            avatar: "http://localhost:8000/images/chill1.png",
+            moment: 30,
+            user: "username 2",
+            content: "just a comment3"
+        },
+        {
+            id: 3,
+            avatar: "http://localhost:8000/images/chill1.png",
+            moment: 50,
+            user: "username 3",
+            content: "just a comment3"
+        },
+    ]
+    const countLeft = (moment: number) => {
+        const left = (moment / 199) * 100
+        return `${left}%`;
+    }
     return (
         <div style={{ marginTop: 20 }}>
             <div
@@ -174,7 +202,42 @@ const WaveTrack = () => {
                                 // background: "#ccc"
                                 backdropFilter: "brightness(0.5)"
                             }}
-                        ></div>
+                        >
+
+                        </div>
+                        <div
+                            className="comments"
+                            style={{ position: "relative" }}
+                        >
+
+                            {arrComments.map((iteam) => {
+                                return (
+                                    <Tooltip
+                                        title={iteam.content}
+                                        arrow
+                                    >
+                                        <img
+                                            onPointerMove={(e) => {
+                                                const hover = hoverRef.current!;
+                                                hover.style.width = countLeft(iteam.moment + 3);
+                                            }}
+
+                                            key={iteam.id}
+                                            style={{
+                                                width: 20,
+                                                height: 20,
+                                                position: "absolute",
+                                                left: countLeft(iteam.moment),
+                                                zIndex: 20,
+                                                top: 71,
+                                            }}
+                                            src={`http://localhost:8000/images/chill1.png`}
+                                        />
+                                    </Tooltip>
+                                )
+                            })}
+
+                        </div>
                     </div>
                 </div>
                 <div className="right"
