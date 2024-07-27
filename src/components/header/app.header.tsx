@@ -10,7 +10,6 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
@@ -20,6 +19,7 @@ import { Container } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
+import { useSession } from "next-auth/react"
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -63,6 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+    const { data: session } = useSession()
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -217,9 +218,17 @@ export default function AppHeader() {
                                 color: "unset"
                             }
                         }}>
-                            <Link href={"/playlist"}>Playlists</Link>
-                            <Link href={"/like"}>Likes</Link>
-                            <Link href={""}>Upload</Link>
+                            {session ?
+                                <>
+                                    <Link href={"/playlist"}>Playlists</Link>
+                                    <Link href={"/like"}>Likes</Link>
+                                    <Link href={""}>Upload</Link>
+                                </>
+                                :
+                                <>
+                                    <Link href={"/api/auth/signin"}>Login</Link>
+                                </>
+                            }
                             <Avatar
                                 onClick={handleProfileMenuOpen}
                             >
