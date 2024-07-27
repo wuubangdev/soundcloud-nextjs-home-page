@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import MainSlider from "../components/main/main.slider";
+import MainSlider from "../../components/main/main.slider";
 import { sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

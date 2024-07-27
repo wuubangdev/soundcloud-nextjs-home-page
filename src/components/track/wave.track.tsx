@@ -213,6 +213,7 @@ const WaveTrack = () => {
                             {arrComments.map((iteam) => {
                                 return (
                                     <Tooltip
+                                        key={iteam.id}
                                         title={iteam.content}
                                         arrow
                                     >
@@ -222,7 +223,6 @@ const WaveTrack = () => {
                                                 hover.style.width = countLeft(iteam.moment + 3);
                                             }}
 
-                                            key={iteam.id}
                                             style={{
                                                 width: 20,
                                                 height: 20,
