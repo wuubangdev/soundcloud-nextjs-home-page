@@ -19,7 +19,7 @@ import { Container } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { useSession } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -63,7 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
-    const { data: session } = useSession()
+    const { data: session } = useSession();
+    console.log("check session: ", session);
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -105,7 +106,8 @@ export default function AppHeader() {
             // }}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }
+            }
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem>
@@ -117,9 +119,12 @@ export default function AppHeader() {
                     Profile
                 </Link>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
-        </Menu>
-    );
+            <MenuItem onClick={() => {
+                handleMenuClose()
+                signOut();
+            }}>Logout</MenuItem>
+        </Menu >
+    )
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
@@ -223,17 +228,17 @@ export default function AppHeader() {
                                     <Link href={"/playlist"}>Playlists</Link>
                                     <Link href={"/like"}>Likes</Link>
                                     <Link href={""}>Upload</Link>
+                                    <Avatar
+                                        onClick={handleProfileMenuOpen}
+                                    >
+                                        WD
+                                    </Avatar>
                                 </>
                                 :
                                 <>
-                                    <Link href={"/api/auth/signin"}>Login</Link>
+                                    <Link href={"#"} onClick={() => signIn()}>Login</Link>
                                 </>
                             }
-                            <Avatar
-                                onClick={handleProfileMenuOpen}
-                            >
-                                WD
-                            </Avatar>
                         </Box>
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
