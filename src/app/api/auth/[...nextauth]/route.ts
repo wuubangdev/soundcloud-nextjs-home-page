@@ -78,7 +78,7 @@ export const authOptions: AuthOptions = {
             // session.address = token.address;
             return session;
         }
-    }
+    },
 }
 
 

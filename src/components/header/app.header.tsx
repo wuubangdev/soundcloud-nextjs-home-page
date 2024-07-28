@@ -65,6 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function AppHeader() {
     const { data: session } = useSession();
     console.log("check session: ", session);
+
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -236,7 +237,10 @@ export default function AppHeader() {
                                 </>
                                 :
                                 <>
-                                    <Link href={"#"} onClick={() => signIn()}>Login</Link>
+                                    <Link
+                                        href={"/auth/signin"}
+                                    // onClick={() => signIn()}
+                                    >Login</Link>
                                 </>
                             }
                         </Box>
