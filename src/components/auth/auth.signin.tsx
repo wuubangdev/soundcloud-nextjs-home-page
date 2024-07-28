@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, Box, Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Button, Divider, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -27,6 +27,17 @@ const AuthSignInPage = () => {
     const [errorUsername, setErrorUsername] = useState<string>("");
     const [errorPassword, setErrorPassword] = useState<string>("");
 
+    const [open, setOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string>("")
+
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
+
 
     const handleSubmit = async () => {
         setIsErrorUsername(false);
@@ -52,7 +63,8 @@ const AuthSignInPage = () => {
         if (!res?.error) {
             route.push("/");
         } else {
-            alert(res.error)
+            setErrorMessage(res.error)
+            setOpen(true);
         }
     }
 
@@ -117,6 +129,11 @@ const AuthSignInPage = () => {
                         />
                         <TextField
                             onChange={(event) => setPassword(event.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSubmit();
+                                }
+                            }}
                             variant="outlined"
                             margin="normal"
                             required
@@ -184,8 +201,22 @@ const AuthSignInPage = () => {
                     </div>
                 </Grid>
             </Grid>
-
-        </Box>
+            <Snackbar
+                open={open}
+                autoHideDuration={4000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={handleClose}
+                    severity="error"
+                    // variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+        </Box >
     )
 }
 

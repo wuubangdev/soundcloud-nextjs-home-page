@@ -64,7 +64,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function AppHeader() {
     const { data: session } = useSession();
-    console.log("check session: ", session);
 
     const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -228,7 +227,7 @@ export default function AppHeader() {
                                 <>
                                     <Link href={"/playlist"}>Playlists</Link>
                                     <Link href={"/like"}>Likes</Link>
-                                    <Link href={""}>Upload</Link>
+                                    <Link href={"/track/upload"}>Upload</Link>
                                     <Avatar
                                         onClick={handleProfileMenuOpen}
                                     >
