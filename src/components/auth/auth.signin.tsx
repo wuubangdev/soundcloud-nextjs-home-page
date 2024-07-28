@@ -11,9 +11,12 @@ import IconButton from '@mui/material/IconButton';
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { ArrowBack } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 const AuthSignInPage = () => {
-
+    const route = useRouter();
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -25,7 +28,7 @@ const AuthSignInPage = () => {
     const [errorPassword, setErrorPassword] = useState<string>("");
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setIsErrorUsername(false);
         setIsErrorPassword(false);
         setErrorUsername("");
@@ -41,7 +44,16 @@ const AuthSignInPage = () => {
             setErrorPassword("Password is not empty.")
             return;
         }
-        console.log(">>> check username: ", username, ' pass: ', password)
+        const res = await signIn("credentials", {
+            username,
+            password,
+            redirect: false,
+        })
+        if (!res?.error) {
+            route.push("/");
+        } else {
+            alert(res.error)
+        }
     }
 
     return (
@@ -71,6 +83,9 @@ const AuthSignInPage = () => {
                     }}
                 >
                     <div style={{ margin: "20px" }}>
+                        <Link href={"/"}>
+                            <ArrowBack />
+                        </Link>
                         <Box sx={{
                             display: "flex",
                             justifyContent: "center",
