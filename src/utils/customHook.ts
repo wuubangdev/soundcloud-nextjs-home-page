@@ -12,9 +12,6 @@ export const useHasMounted = () => {
     return hasMounted;
 }
 
-
-
-
 // WaveSurfer hook
 export const useWavesurfer = (
     containerRef: React.RefObject<HTMLDivElement>,

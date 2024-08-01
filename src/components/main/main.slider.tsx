@@ -6,6 +6,7 @@ import { Settings } from "react-slick";
 import { Box, Button, Divider } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Link from "next/link";
+import { useTrackContext } from "@/lib/track.wrapper";
 interface IProps {
     title: string;
     data: ITrackTop[];
@@ -13,6 +14,10 @@ interface IProps {
 
 const MainSlider = (props: IProps) => {
     const { data, title } = props;
+
+    const { setCurrentTrack } = useTrackContext() as ITrackContext;
+
+
     const NextArrow = (props: any) => {
         return (
             <Button
@@ -56,7 +61,9 @@ const MainSlider = (props: IProps) => {
         infinite: true,
         speed: 500,
         slidesToShow: 5,
-        slidesToScroll: 1,
+        slidesToScroll: 2,
+        autoplay: true,
+        autoplaySpeed: 3000,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />
     };
@@ -70,7 +77,7 @@ const MainSlider = (props: IProps) => {
                 },
                 "img": {
                     width: "100%",
-                    // height: 150,
+                    height: "100%",
                 },
                 "h3": {
                     border: "1px solid #ccc",
@@ -85,10 +92,17 @@ const MainSlider = (props: IProps) => {
                     return (
                         <div key={track._id} className="track">
                             <img
+                                style={{ height: "100%", width: "100%" }}
                                 src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
-                                alt=""
                             />
-                            <Link href={`/track/${track._id}?audio=${track.trackUrl}`}>
+                            <Link
+                                style={{
+                                    textDecoration: "none",
+                                    color: "unset",
+                                    cursor: "pointer",
+                                }}
+                                href={`/track/${track._id}?audio=${track.trackUrl}`}
+                            >
                                 <h4>{track.title}</h4>
                             </Link>
                             <h4>{track.category}</h4>

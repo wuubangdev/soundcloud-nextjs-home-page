@@ -7,9 +7,15 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import "./wave.scss"
 import { Tooltip } from "@mui/material";
+import { useTrackContext } from "@/lib/track.wrapper";
 
-const WaveTrack = () => {
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+interface IProps {
+    track: ITrackTop | undefined;
+}
+
+const WaveTrack = (props: IProps) => {
+    const { track } = props;
+    const [isPlaying, setIsPlaying] = useState<boolean>(true);
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio');
     const containerRef = useRef<HTMLDivElement>(null);
@@ -17,12 +23,12 @@ const WaveTrack = () => {
     const durationRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
 
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+
     const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
         let gradient, progressGradient;
 
         if (typeof window !== "undefined") {
-
-
 
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d')!;
@@ -56,24 +62,37 @@ const WaveTrack = () => {
     const wavesurfer = useWavesurfer(containerRef, optionsMemo);
 
     useEffect(() => {
+        if (currentTrack.isPlaying == true) {
+            setIsPlaying(false);
+            if (wavesurfer) {
+                wavesurfer.pause();
+            }
+        }
+        if (currentTrack._id === "" && track) {
+            setCurrentTrack({ ...track, isPlaying: true })
+        }
+    }, [currentTrack])
+
+    useEffect(() => {
         if (!wavesurfer) return;
         setIsPlaying(false);
         const timeEl = timeRef.current!;
         const durationEl = durationRef.current!;
 
-
-
         const hover = hoverRef.current!;
         const waveform = containerRef.current!;
-        waveform.addEventListener('pointermove', (e) => (hover.style.width = `${e.offsetX}px`))
 
+        waveform.addEventListener('pointermove', (e) => (hover.style.width = `${e.offsetX}px`))
 
         const subscriptions = [
             wavesurfer.on('play', () => setIsPlaying(true)),
             wavesurfer.on('pause', () => setIsPlaying(false)),
             wavesurfer.on('decode', (duration) => (durationEl.textContent = formatTime(duration))),
             wavesurfer.on('timeupdate', (currentTime) => (timeEl.textContent = formatTime(currentTime))),
-            wavesurfer.on('interaction', () => { wavesurfer.playPause() })
+            wavesurfer.on('interaction', () => {
+                wavesurfer.play();
+                setCurrentTrack({ ...currentTrack, isPlaying: false });
+            })
         ]
 
         return () => {
@@ -83,7 +102,13 @@ const WaveTrack = () => {
 
     const onPlayClick = useCallback(() => {
         if (wavesurfer) {
-            wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play();
+            if (wavesurfer.isPlaying() === true) {
+                wavesurfer.pause();
+                // setCurrentTrack({ ...currentTrack, isPlaying: true });
+            } else {
+                wavesurfer.play();
+                setCurrentTrack({ ...currentTrack, isPlaying: false });
+            }
         }
     }, [wavesurfer]);
 
@@ -143,7 +168,9 @@ const WaveTrack = () => {
                     <div className="info" style={{ display: "flex" }}>
                         <div>
                             <div
-                                onClick={() => onPlayClick()}
+                                onClick={() => {
+                                    onPlayClick()
+                                }}
                                 style={{
                                     borderRadius: "50%",
                                     background: "#f50",
@@ -174,7 +201,7 @@ const WaveTrack = () => {
                                 width: "fit-content",
                                 color: "white"
                             }}>
-                                Hỏi Dân IT's song
+                                {track?.title}
                             </div>
                             <div style={{
                                 padding: "0 5px",
@@ -185,7 +212,7 @@ const WaveTrack = () => {
                                 color: "white"
                             }}
                             >
-                                Eric
+                                {track?.description}
                             </div>
                         </div>
                     </div>
@@ -203,13 +230,11 @@ const WaveTrack = () => {
                                 backdropFilter: "brightness(0.5)"
                             }}
                         >
-
                         </div>
                         <div
                             className="comments"
                             style={{ position: "relative" }}
                         >
-
                             {arrComments.map((iteam) => {
                                 return (
                                     <Tooltip
@@ -253,6 +278,10 @@ const WaveTrack = () => {
                         width: 250,
                         height: 250
                     }}>
+                        <img
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl} `}
+                            style={{ display: "block", height: "100%", width: "100%" }}
+                        />
                     </div>
                 </div>
             </div>

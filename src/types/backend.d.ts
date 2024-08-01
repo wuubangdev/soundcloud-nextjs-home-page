@@ -42,13 +42,27 @@ declare global {
     }
 
     interface IModelPaginate<T> {
-        meta: {
-            current: number;
-            pageSize: number;
-            pages: number;
-            total: number;
-        },
-        result: T[]
+        error?: string | string[];
+        message: string;
+        statusCode: number | string;
+        data?: {
+            meta: {
+                current: number;
+                pageSize: number;
+                pages: number;
+                total: number;
+            },
+            result: T[]
+        }
+    }
+
+    interface IShareTrack extends ITrackTop {
+        isPlaying: boolean;
+    }
+
+    interface ITrackContext {
+        currentTrack: IShareTrack;
+        setCurrentTrack: (v: IShareTrack) => void;
     }
 
 }
