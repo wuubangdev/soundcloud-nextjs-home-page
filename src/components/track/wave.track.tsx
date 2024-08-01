@@ -104,10 +104,12 @@ const WaveTrack = (props: IProps) => {
         if (wavesurfer) {
             if (wavesurfer.isPlaying() === true) {
                 wavesurfer.pause();
-                // setCurrentTrack({ ...currentTrack, isPlaying: true });
+                // setCurrentTrack({ ...currentTrack, isPlaying: false });
             } else {
                 wavesurfer.play();
-                setCurrentTrack({ ...currentTrack, isPlaying: false });
+                if (track) {
+                    setCurrentTrack({ ...track, isPlaying: false });
+                }
             }
         }
     }, [wavesurfer]);
