@@ -46,7 +46,6 @@ const InputFileUpload = (props: IProps) => {
                         },
                     }
                 )
-                console.log(res.data.data.fileName);
                 if (res.data.data.fileName && setImageUrl) {
                     setImageUrl(res.data.data.fileName);
                     setImageFile && setImageFile(image);
@@ -75,7 +74,6 @@ const InputFileUpload = (props: IProps) => {
                     !isHandle && e.preventDefault();
                     const event = e.target as HTMLInputElement;
                     if (event.files) {
-                        console.log(event.files[0])
                         handleUploadImage(event.files[0]);
                     }
                 }}

@@ -19,7 +19,8 @@ import { Container } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
+import { fetchDefaultImages } from '@/utils/api';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -230,8 +231,8 @@ export default function AppHeader() {
                                     <Link href={"/track/upload"}>Upload</Link>
                                     <Avatar
                                         onClick={handleProfileMenuOpen}
+                                        src={fetchDefaultImages(session.user.type)}
                                     >
-                                        WD
                                     </Avatar>
                                 </>
                                 :

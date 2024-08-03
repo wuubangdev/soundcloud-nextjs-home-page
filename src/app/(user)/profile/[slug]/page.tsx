@@ -7,8 +7,12 @@ import { Box, Container, Grid } from "@mui/material";
 const Profile = async ({ params }: { params: { slug: string } }) => {
 
     const tracks = await sendRequest<IModelPaginate<ITrackTop>>({
-        url: "http://localhost:8000/api/v1/tracks/users?pageSize=100&current=4",
+        url: "http://localhost:8000/api/v1/tracks/users",
         method: "POST",
+        queryParams: {
+            current: 1,
+            pageSize: 100,
+        },
         body: { id: params.slug },
     })
     return (

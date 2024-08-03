@@ -5,6 +5,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import { useHasMounted } from "@/utils/customHook";
 import { useTrackContext } from "@/lib/track.wrapper";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 const AppFooter = () => {
     const playerRef = useRef<any>();
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
@@ -34,6 +35,7 @@ const AppFooter = () => {
                 }}
             >
                 <Container
+                    disableGutters
                     sx={{
                         display: "flex",
                         gap: 5,
@@ -63,7 +65,14 @@ const AppFooter = () => {
                                 }}
                             />
                             {currentTrack.imgUrl !== "" && currentTrack.title !== "" && currentTrack.description !== "" ?
-                                <>
+                                <Link
+                                    href={`/track/${currentTrack._id}?audio=${currentTrack.trackUrl}`}
+                                    style={{
+                                        display: 'flex',
+                                        textDecoration: 'unset',
+                                        gap: 25
+                                    }}
+                                >
                                     <div>
                                         <img
                                             style={{ height: "50px" }}
@@ -80,10 +89,26 @@ const AppFooter = () => {
                                         }}
 
                                     >
-                                        <div style={{ color: "black" }}><b>{currentTrack.title}</b></div>
-                                        <div style={{ color: "#ccc" }}>{currentTrack.description}</div>
+                                        <div
+                                            style={{
+                                                color: "#ccc",
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                            {currentTrack.description}
+                                        </div>
+                                        <div
+                                            style={{
+                                                color: "black",
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                            <b>{currentTrack.title}</b>
+                                        </div>
                                     </div>
-                                </>
+                                </Link>
                                 :
                                 <div
                                     style={{

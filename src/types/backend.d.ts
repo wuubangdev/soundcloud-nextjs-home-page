@@ -65,4 +65,48 @@ declare global {
         setCurrentTrack: (v: IShareTrack) => void;
     }
 
+    interface IComment {
+        _id: string;
+        content: string;
+        moment: number,
+        user:
+        {
+            _id: string;
+            email: string;
+            name: string;
+            role: string;
+            type: string;
+        } | null,
+        track:
+        {
+            _id: string;
+            title: string;
+            description: string;
+            trackUrl: string;
+        } | null,
+        isDeleted: boolean,
+        createdAt: string;
+        updatedAt: string;
+    }
+
+    interface ICommentCreate {
+        content: string;
+        moment: number,
+        user: string;
+        track: string;
+        isDeleted: boolean,
+        _id: string;
+        createdAt: string;
+        updatedAt: string;
+    }
+    interface ITrackLikedByUser {
+        _id: string;
+        title: string;
+        description: string;
+        category: string;
+        imgUrl: string;
+        trackUrl: string;
+        countLike: number,
+        countPlay: number,
+    }
 }

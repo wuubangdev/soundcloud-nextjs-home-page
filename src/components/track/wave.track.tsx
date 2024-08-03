@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useWavesurfer } from "@/utils/customHook";
 import { WaveSurferOptions } from "wavesurfer.js";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -8,22 +8,30 @@ import PauseIcon from '@mui/icons-material/Pause';
 import "./wave.scss"
 import { Tooltip } from "@mui/material";
 import { useTrackContext } from "@/lib/track.wrapper";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import CommentTrack from "./comment.track";
+import LikeTrack from "./like.track";
 
 interface IProps {
     track: ITrackTop | undefined;
+    listComment: IComment[] | undefined;
+    listTrackLikeByUser: ITrackLikedByUser[] | undefined;
 }
 
 const WaveTrack = (props: IProps) => {
-    const { track } = props;
-    const [isPlaying, setIsPlaying] = useState<boolean>(true);
+
+    const { track, listComment, listTrackLikeByUser } = props;
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio');
     const containerRef = useRef<HTMLDivElement>(null);
     const timeRef = useRef<HTMLDivElement>(null);
     const durationRef = useRef<HTMLDivElement>(null);
     const hoverRef = useRef<HTMLDivElement>(null);
-
+    const [timeDuration, setTimeDuration] = useState<number>(0);
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+    const route = useRouter();
+    const viewRef = useRef(true);
 
     const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
         let gradient, progressGradient;
@@ -69,7 +77,7 @@ const WaveTrack = (props: IProps) => {
             }
         }
         if (currentTrack._id === "" && track) {
-            setCurrentTrack({ ...track, isPlaying: true })
+            setCurrentTrack({ ...track, isPlaying: false })
         }
     }, [currentTrack])
 
@@ -87,7 +95,10 @@ const WaveTrack = (props: IProps) => {
         const subscriptions = [
             wavesurfer.on('play', () => setIsPlaying(true)),
             wavesurfer.on('pause', () => setIsPlaying(false)),
-            wavesurfer.on('decode', (duration) => (durationEl.textContent = formatTime(duration))),
+            wavesurfer.on('decode', (duration) => {
+                durationEl.textContent = formatTime(duration)
+                setTimeDuration(duration)
+            }),
             wavesurfer.on('timeupdate', (currentTime) => (timeEl.textContent = formatTime(currentTime))),
             wavesurfer.on('interaction', () => {
                 wavesurfer.play();
@@ -120,32 +131,27 @@ const WaveTrack = (props: IProps) => {
         const paddedSeconds = `0${secondsRemainder}`.slice(-2)
         return `${minutes}:${paddedSeconds}`
     }
-    const arrComments = [
-        {
-            id: 1,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 10,
-            user: "username 1",
-            content: "just a comment1"
-        },
-        {
-            id: 2,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 30,
-            user: "username 2",
-            content: "just a comment3"
-        },
-        {
-            id: 3,
-            avatar: "http://localhost:8000/images/chill1.png",
-            moment: 50,
-            user: "username 3",
-            content: "just a comment3"
-        },
-    ]
     const countLeft = (moment: number) => {
-        const left = (moment / 199) * 100
+        let left;
+        if (timeDuration) {
+            left = (moment / (timeDuration)) * 100
+        }
         return `${left}%`;
+    }
+
+    const increaseView = async () => {
+        if (viewRef.current === true) {
+            await sendRequest<IBackendRes<ICommentCreate>>({
+                url: `http://localhost:8000/api/v1/tracks/increase-view`,
+                method: "POST",
+                body: {
+                    trackId: track?._id,
+                }
+            })
+            route.refresh();
+            viewRef.current = false;
+        }
+
     }
     return (
         <div style={{ marginTop: 20 }}>
@@ -171,7 +177,8 @@ const WaveTrack = (props: IProps) => {
                         <div>
                             <div
                                 onClick={() => {
-                                    onPlayClick()
+                                    onPlayClick();
+                                    increaseView();
                                 }}
                                 style={{
                                     borderRadius: "50%",
@@ -237,32 +244,37 @@ const WaveTrack = (props: IProps) => {
                             className="comments"
                             style={{ position: "relative" }}
                         >
-                            {arrComments.map((iteam) => {
-                                return (
-                                    <Tooltip
-                                        key={iteam.id}
-                                        title={iteam.content}
-                                        arrow
-                                    >
-                                        <img
-                                            onPointerMove={(e) => {
-                                                const hover = hoverRef.current!;
-                                                hover.style.width = countLeft(iteam.moment + 3);
-                                            }}
+                            {timeDuration ?
+                                <>
+                                    {listComment && listComment.map((comment) => {
+                                        return (
+                                            <Tooltip
+                                                key={comment._id}
+                                                title={comment.content}
+                                                arrow
+                                            >
+                                                <img
+                                                    onPointerMove={(e) => {
+                                                        const hover = hoverRef.current!;
+                                                        hover.style.width = countLeft(comment.moment + 3);
+                                                    }}
 
-                                            style={{
-                                                width: 20,
-                                                height: 20,
-                                                position: "absolute",
-                                                left: countLeft(iteam.moment),
-                                                zIndex: 20,
-                                                top: 71,
-                                            }}
-                                            src={`http://localhost:8000/images/chill1.png`}
-                                        />
-                                    </Tooltip>
-                                )
-                            })}
+                                                    style={{
+                                                        width: 20,
+                                                        height: 20,
+                                                        position: "absolute",
+                                                        left: countLeft(comment.moment),
+                                                        zIndex: 20,
+                                                        top: 71,
+                                                    }}
+                                                    src={fetchDefaultImages(comment?.user?.type)}
+                                                />
+                                            </Tooltip>
+                                        )
+                                    })}
+                                </>
+                                :
+                                <></>}
 
                         </div>
                     </div>
@@ -281,11 +293,24 @@ const WaveTrack = (props: IProps) => {
                         height: 250
                     }}>
                         <img
-                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl} `}
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl} `}
                             style={{ display: "block", height: "100%", width: "100%" }}
                         />
                     </div>
                 </div>
+            </div>
+            <div>
+                <LikeTrack
+                    track={track}
+                    listTrackLikeByUser={listTrackLikeByUser}
+                />
+            </div>
+            <div>
+                <CommentTrack
+                    comments={listComment}
+                    track={track}
+                    wavesurfer={wavesurfer}
+                />
             </div>
         </div>
 
