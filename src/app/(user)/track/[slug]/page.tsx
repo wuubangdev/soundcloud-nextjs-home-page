@@ -1,17 +1,46 @@
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import WaveTrack from "@/components/track/wave.track";
-import { sendRequest } from "@/utils/api";
+import { getIdFromSlug, sendRequest, toSlugify } from "@/utils/api";
 import { Container } from "@mui/material";
 import { getServerSession } from "next-auth";
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+    params: { slug: string }
+    searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+    { params, searchParams }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+
+    const track = await sendRequest<IBackendRes<ITrackTop>>({
+        url: `http://localhost:8000/api/v1/tracks/${getIdFromSlug(params.slug)}`,
+        method: "GET",
+    })
+
+    return {
+        title: track.data?.title,
+        description: track.data?.description,
+        openGraph: {
+            title: 'Hỏi Dân IT',
+            description: 'Beyond Your Coding Skills',
+            type: 'website',
+            images: [`https://raw.githubusercontent.com/haryphamdev/sharing-host-files/master/detail-doctors/a2.jpg`],
+        },
+    }
+}
 
 const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
 
     const session = await getServerSession(authOptions);
 
     const track = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+        url: `http://localhost:8000/api/v1/tracks/${getIdFromSlug(params.slug)}`,
         method: "GET",
+        nextOption: { cache: "no-store" },
     })
     let comment;
     let listTrackLikeByUser;
@@ -23,7 +52,7 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
             queryParams: {
                 current: 1,
                 pageSize: 100,
-                trackId: params.slug,
+                trackId: getIdFromSlug(params.slug),
                 sort: "-createdAt"
             }
         })

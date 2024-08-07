@@ -6,6 +6,7 @@ import { useHasMounted } from "@/utils/customHook";
 import { useTrackContext } from "@/lib/track.wrapper";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 const AppFooter = () => {
     const playerRef = useRef<any>();
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
@@ -73,10 +74,21 @@ const AppFooter = () => {
                                         gap: 25
                                     }}
                                 >
-                                    <div>
-                                        <img
-                                            style={{ height: "50px" }}
-                                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl} `}
+                                    <div
+                                        style={{
+                                            position: "relative",
+                                            height: "50px",
+                                            width: "50px"
+                                        }}
+                                    >
+                                        <Image
+                                            alt="track image"
+                                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${currentTrack.imgUrl}`}
+                                            fill
+                                            sizes={"100%"}
+                                            style={{
+                                                objectFit: 'contain',
+                                            }}
                                         />
                                     </div>
                                     <div

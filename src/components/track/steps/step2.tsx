@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import InputFileUpload from '@/components/input/input.file.upload';
 import { useSession } from 'next-auth/react';
 import { sendRequest } from '@/utils/api';
+import Image from 'next/image';
 
 const LinearProgressWithLabel = (props: LinearProgressProps & { value: number }) => {
     return (
@@ -147,12 +148,13 @@ const Step2 = (props: IProps) => {
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <div style={{ width: "80%", height: 250, backgroundColor: "#ccc" }}>
-                            <img
-                                style={{ height: "100%", width: "100%" }}
-                                src={imageUrl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${imageUrl}` : ""}
-                                alt="" />
-                        </div>
+                        <Image
+                            style={{ height: "100%", width: "100%" }}
+                            src={imageUrl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${imageUrl}` : ""}
+                            alt="image track upload"
+                            width={250}
+                            height={250}
+                        />
                         <div style={{ padding: "10px" }}>
                             <InputFileUpload
                                 isHandle={true}

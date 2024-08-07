@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import WaveSurfer from "wavesurfer.js";
 import { useRouter } from "next/navigation";
 import { useHasMounted } from "@/utils/customHook";
+import Image from "next/image";
 dayjs.extend(relativeTime)
 
 interface IProps {
@@ -101,9 +102,9 @@ const CommentTrack = (props: IProps) => {
                 >
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={3} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                            <img
+                            <Image
                                 src={fetchDefaultImages(track?.uploader.type)}
-                                alt=""
+                                alt="avatar comment"
                                 width={150}
                                 height={150}
                             />

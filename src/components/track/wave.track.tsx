@@ -11,6 +11,7 @@ import { useTrackContext } from "@/lib/track.wrapper";
 import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import CommentTrack from "./comment.track";
 import LikeTrack from "./like.track";
+import Image from "next/image";
 
 interface IProps {
     track: ITrackTop | undefined;
@@ -19,7 +20,6 @@ interface IProps {
 }
 
 const WaveTrack = (props: IProps) => {
-
     const { track, listComment, listTrackLikeByUser } = props;
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const searchParams = useSearchParams()
@@ -71,19 +71,18 @@ const WaveTrack = (props: IProps) => {
 
     useEffect(() => {
         if (currentTrack.isPlaying == true) {
-            setIsPlaying(false);
             if (wavesurfer) {
                 wavesurfer.pause();
+                setIsPlaying(false);
             }
         }
         if (currentTrack._id === "" && track) {
             setCurrentTrack({ ...track, isPlaying: false })
         }
-    }, [currentTrack])
+    }, [currentTrack.isPlaying])
 
     useEffect(() => {
         if (!wavesurfer) return;
-        setIsPlaying(false);
         const timeEl = timeRef.current!;
         const durationEl = durationRef.current!;
 
@@ -93,15 +92,14 @@ const WaveTrack = (props: IProps) => {
         waveform.addEventListener('pointermove', (e) => (hover.style.width = `${e.offsetX}px`))
 
         const subscriptions = [
-            wavesurfer.on('play', () => setIsPlaying(true)),
-            wavesurfer.on('pause', () => setIsPlaying(false)),
             wavesurfer.on('decode', (duration) => {
-                durationEl.textContent = formatTime(duration)
-                setTimeDuration(duration)
+                durationEl.textContent = formatTime(duration);
+                setTimeDuration(duration);
             }),
             wavesurfer.on('timeupdate', (currentTime) => (timeEl.textContent = formatTime(currentTime))),
             wavesurfer.on('interaction', () => {
                 wavesurfer.play();
+                setIsPlaying(true);
                 setCurrentTrack({ ...currentTrack, isPlaying: false });
             })
         ]
@@ -115,11 +113,12 @@ const WaveTrack = (props: IProps) => {
         if (wavesurfer) {
             if (wavesurfer.isPlaying() === true) {
                 wavesurfer.pause();
-                // setCurrentTrack({ ...currentTrack, isPlaying: false });
+                setIsPlaying(false);
             } else {
                 wavesurfer.play();
-                if (track) {
-                    setCurrentTrack({ ...track, isPlaying: false });
+                setIsPlaying(true);
+                if (track?._id) {
+                    setCurrentTrack({ ...currentTrack, isPlaying: false });
                 }
             }
         }
@@ -253,21 +252,21 @@ const WaveTrack = (props: IProps) => {
                                                 title={comment.content}
                                                 arrow
                                             >
-                                                <img
+                                                <Image
                                                     onPointerMove={(e) => {
                                                         const hover = hoverRef.current!;
                                                         hover.style.width = countLeft(comment.moment + 3);
                                                     }}
-
                                                     style={{
-                                                        width: 20,
-                                                        height: 20,
                                                         position: "absolute",
                                                         left: countLeft(comment.moment),
                                                         zIndex: 20,
                                                         top: 71,
                                                     }}
                                                     src={fetchDefaultImages(comment?.user?.type)}
+                                                    alt="avatar track comment"
+                                                    width={20}
+                                                    height={20}
                                                 />
                                             </Tooltip>
                                         )
@@ -287,16 +286,22 @@ const WaveTrack = (props: IProps) => {
                         alignItems: "center"
                     }}
                 >
-                    <div style={{
-                        background: "#ccc",
-                        width: 250,
-                        height: 250
-                    }}>
-                        <img
-                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl} `}
-                            style={{ display: "block", height: "100%", width: "100%" }}
+                    {track?.imgUrl ?
+                        <Image
+                            alt="track image"
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
+                            width={250}
+                            height={250}
                         />
-                    </div>
+                        :
+                        <div
+                            style={{
+                                background: "#ccc",
+                                width: 250,
+                                height: 250
+                            }}>
+                        </div>
+                    }
                 </div>
             </div>
             <div>

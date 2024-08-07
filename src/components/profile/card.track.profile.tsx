@@ -13,6 +13,7 @@ import { Grid } from '@mui/material';
 import { useTrackContext } from '@/lib/track.wrapper';
 import PauseIcon from '@mui/icons-material/Pause';
 import Link from 'next/link';
+import { toSlugify } from '@/utils/api';
 
 interface IProps {
     tracks: ITrackTop[] | undefined;
@@ -37,7 +38,7 @@ const CardTrackProfile = (props: IProps) => {
                                             color: "unset",
                                             cursor: "pointer",
                                         }}
-                                        href={`/track/${track._id}?audio=${track.trackUrl}`}
+                                        href={`/track/${toSlugify(track.title)}-${track._id}.html?audio=${track.trackUrl}`}
                                     >
                                         <Typography component="div" variant="h6">
                                             {track.title}
