@@ -84,7 +84,7 @@ const Step2 = (props: IProps) => {
         }
 
         const res = await sendRequest<IBackendRes<any>>({
-            url: "http://localhost:8000/api/v1/tracks",
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
             method: "POST",
             headers: { 'Authorization': `Bearer ${session?.access_token}`, },
             body: {

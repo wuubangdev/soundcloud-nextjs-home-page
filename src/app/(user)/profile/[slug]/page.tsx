@@ -7,7 +7,7 @@ import { Box, Container, Grid } from "@mui/material";
 const Profile = async ({ params }: { params: { slug: string } }) => {
 
     const tracks = await sendRequest<IModelPaginate<ITrackTop>>({
-        url: "http://localhost:8000/api/v1/tracks/users",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/users`,
         method: "POST",
         queryParams: {
             current: 1,

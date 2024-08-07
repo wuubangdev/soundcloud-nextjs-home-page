@@ -1,7 +1,6 @@
 
 
-const PlayList = () => {
-
+const PlayList = async () => {
     return (
         <div>
             PlayList

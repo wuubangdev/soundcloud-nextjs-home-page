@@ -141,7 +141,7 @@ const WaveTrack = (props: IProps) => {
     const increaseView = async () => {
         if (viewRef.current === true) {
             await sendRequest<IBackendRes<ICommentCreate>>({
-                url: `http://localhost:8000/api/v1/tracks/increase-view`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
                 method: "POST",
                 body: {
                     trackId: track?._id,
@@ -315,6 +315,7 @@ const WaveTrack = (props: IProps) => {
                     comments={listComment}
                     track={track}
                     wavesurfer={wavesurfer}
+                    setIsPlaying={setIsPlaying}
                 />
             </div>
         </div>

@@ -17,7 +17,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
 
     const track = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${getIdFromSlug(params.slug)}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${getIdFromSlug(params.slug)}`,
         method: "GET",
     })
 
@@ -38,7 +38,7 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
     const session = await getServerSession(authOptions);
 
     const track = await sendRequest<IBackendRes<ITrackTop>>({
-        url: `http://localhost:8000/api/v1/tracks/${getIdFromSlug(params.slug)}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${getIdFromSlug(params.slug)}`,
         method: "GET",
         nextOption: { cache: "no-store" },
     })
@@ -46,7 +46,7 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
     let listTrackLikeByUser;
     if (session) {
         comment = await sendRequest<IModelPaginate<IComment>>({
-            url: `http://localhost:8000/api/v1/tracks/comments`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,
             method: "POST",
             headers: { 'Authorization': `Bearer ${session?.access_token}`, },
             queryParams: {
@@ -57,7 +57,7 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
             }
         })
         listTrackLikeByUser = await sendRequest<IModelPaginate<ITrackLikedByUser>>({
-            url: `http://localhost:8000/api/v1/likes`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
             method: "GET",
             headers: { 'Authorization': `Bearer ${session?.access_token}`, },
             queryParams: {

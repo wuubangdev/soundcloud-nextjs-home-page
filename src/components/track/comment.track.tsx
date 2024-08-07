@@ -5,37 +5,36 @@ import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import { Avatar, Box, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, TextField, Typography } from "@mui/material";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Fragment, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
 import { useSession } from "next-auth/react";
 import WaveSurfer from "wavesurfer.js";
 import { useRouter } from "next/navigation";
 import { useHasMounted } from "@/utils/customHook";
 import Image from "next/image";
+import { useTrackContext } from "@/lib/track.wrapper";
 dayjs.extend(relativeTime)
 
 interface IProps {
     comments: IComment[] | undefined;
     track: ITrackTop | undefined;
     wavesurfer: WaveSurfer | null;
+    setIsPlaying: Dispatch<SetStateAction<boolean>>;
 }
 
 const CommentTrack = (props: IProps) => {
 
     const route = useRouter();
-
     const isHasMounted = useHasMounted();
-
     const { data: session } = useSession();
-
     const { track, comments, wavesurfer } = props;
-
     const [comment, setComment] = useState<string>("");
+    const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
     const handleSendComment = async () => {
         if (session && track) {
             const commentCreate = await sendRequest<IBackendRes<ICommentCreate>>({
-                url: `http://localhost:8000/api/v1/comments`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/comments`,
                 method: "POST",
                 headers: { 'Authorization': `Bearer ${session?.access_token}` },
                 body: {
@@ -61,6 +60,8 @@ const CommentTrack = (props: IProps) => {
             const duration = wavesurfer.getDuration();
             wavesurfer.seekTo(moment / duration);
             wavesurfer.play();
+            setCurrentTrack({ ...currentTrack, isPlaying: false });
+            props.setIsPlaying(true);
         }
     }
     return (

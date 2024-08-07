@@ -16,7 +16,7 @@ const LikeTrack = ({ track, listTrackLikeByUser }: {
     const handleClickLike = async () => {
         if (session && track) {
             const res = await sendRequest<IBackendRes<ICommentCreate>>({
-                url: `http://localhost:8000/api/v1/likes`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
                 method: "POST",
                 headers: { 'Authorization': `Bearer ${session?.access_token}` },
                 body: {
