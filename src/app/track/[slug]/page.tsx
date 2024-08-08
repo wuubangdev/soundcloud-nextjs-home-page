@@ -33,6 +33,13 @@ export async function generateMetadata(
     }
 }
 
+export async function generateStaticParams() {
+
+    return [
+        { slug: "luot-song-dap-may-github-66ae2f9739a96cc470152bf1.html" },
+    ]
+}
+
 const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
 
     const session = await getServerSession(authOptions);
@@ -40,7 +47,7 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
     const track = await sendRequest<IBackendRes<ITrackTop>>({
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${getIdFromSlug(params.slug)}`,
         method: "GET",
-        nextOption: { cache: "no-store" },
+        // nextOption: { cache: "no-store" },
     })
     let comment;
     let listTrackLikeByUser;
