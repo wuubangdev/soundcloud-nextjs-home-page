@@ -1,17 +1,35 @@
+'use client'
 import { Box, Chip } from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const LikeTrack = ({ track, listTrackLikeByUser }: {
+const LikeTrack = ({ track }: {
     track: ITrackTop | undefined;
-    listTrackLikeByUser: ITrackLikedByUser[] | undefined
 }) => {
-
     const { data: session } = useSession();
-    const route = useRouter();
+    const [listTrackLikeByUser, setListTrackLikeByUser] = useState<(ITrackLikedByUser[] | undefined)>()
+
+    useEffect(() => {
+        fetchLike();
+    }, [])
+
+    const fetchLike = async () => {
+        const res = await sendRequest<IModelPaginate<ITrackLikedByUser>>({
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
+            method: "GET",
+            headers: { 'Authorization': `Bearer ${session?.access_token}`, },
+            queryParams: {
+                current: 1,
+                pageSize: 100
+            }
+        })
+        if (res?.data?.result) {
+            setListTrackLikeByUser(res.data.result);
+        }
+    }
 
     const handleClickLike = async () => {
         if (session && track) {
@@ -25,7 +43,7 @@ const LikeTrack = ({ track, listTrackLikeByUser }: {
                 }
             })
             if (res.statusCode === 201) {
-                route.refresh();
+                fetchLike();
             }
         }
     };

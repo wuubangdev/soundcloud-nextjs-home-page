@@ -16,11 +16,13 @@ import Image from "next/image";
 interface IProps {
     track: ITrackTop | undefined;
     listComment: IComment[] | undefined;
-    listTrackLikeByUser: ITrackLikedByUser[] | undefined;
+    // listTrackLikeByUser: ITrackLikedByUser[] | undefined;
 }
 
 const WaveTrack = (props: IProps) => {
-    const { track, listComment, listTrackLikeByUser } = props;
+    const { track, listComment,
+        // listTrackLikeByUser 
+    } = props;
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const searchParams = useSearchParams()
     const fileName = searchParams.get('audio');
@@ -307,7 +309,7 @@ const WaveTrack = (props: IProps) => {
             <div>
                 <LikeTrack
                     track={track}
-                    listTrackLikeByUser={listTrackLikeByUser}
+                // listTrackLikeByUser={listTrackLikeByUser}
                 />
             </div>
             <div>
