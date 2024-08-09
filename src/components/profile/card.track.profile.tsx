@@ -20,13 +20,14 @@ interface IProps {
 }
 const CardTrackProfile = (props: IProps) => {
     const theme = useTheme();
+
     const { tracks } = props;
 
     const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
     return (
         <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 2, md: 3 }}>
-            {tracks && tracks.map((track, i) => {
+            {tracks && tracks.map((track) => {
                 return (
                     <Grid key={track._id} item xs={12} md={6}>
                         <Card sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -59,7 +60,6 @@ const CardTrackProfile = (props: IProps) => {
                                             onClick={(e) => setCurrentTrack({ ...track, isPlaying: false })}
                                         >
                                             <PauseIcon sx={{ height: 38, width: 38 }} />
-                                            {/* <PlayArrowIcon sx={{ height: 38, width: 38 }} /> */}
                                         </IconButton>
                                     }
                                     {
@@ -68,7 +68,6 @@ const CardTrackProfile = (props: IProps) => {
                                         <IconButton aria-label="play/pause"
                                             onClick={(e) => setCurrentTrack({ ...track, isPlaying: true })}
                                         >
-                                            {/* <PauseIcon sx={{ height: 38, width: 38 }} /> */}
                                             <PlayArrowIcon sx={{ height: 38, width: 38 }} />
                                         </IconButton>
                                     }

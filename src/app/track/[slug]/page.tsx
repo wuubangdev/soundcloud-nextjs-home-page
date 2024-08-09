@@ -47,7 +47,10 @@ const DetailTrackPage = async ({ params }: { params: { slug: string } }) => {
     const track = await sendRequest<IBackendRes<ITrackTop>>({
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${getIdFromSlug(params.slug)}`,
         method: "GET",
-        // nextOption: { cache: "no-store" },
+        nextOption: {
+            // cache: "no-store",
+            next: { tags: ['track-by-id'] }
+        },
     })
     const comment = await sendRequest<IModelPaginate<IComment>>({
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/comments`,

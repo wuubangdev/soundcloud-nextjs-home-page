@@ -8,6 +8,7 @@ import InputFileUpload from '@/components/input/input.file.upload';
 import { useSession } from 'next-auth/react';
 import { sendRequest } from '@/utils/api';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const LinearProgressWithLabel = (props: LinearProgressProps & { value: number }) => {
     return (
@@ -47,6 +48,7 @@ const Step2 = (props: IProps) => {
     const [imageFile, setImageFile] = useState<string>("");
     const [imageUrl, setImageUrl] = useState<string>("");
     const { data: session } = useSession();
+    const route = useRouter();
 
 
 
@@ -102,6 +104,15 @@ const Step2 = (props: IProps) => {
             setOpen(true);
             setValue(0);
             setTrackName("");
+            await sendRequest<IBackendRes<any>>({
+                url: `/api/revalidate`,
+                method: "POST",
+                queryParams: {
+                    tag: "track-by-user",
+                    secret: "wubangdevRandomString",
+                }
+            })
+            route.refresh();
 
         } else {
             setSeverity("error");
@@ -148,13 +159,22 @@ const Step2 = (props: IProps) => {
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <Image
-                            style={{ height: "100%", width: "100%" }}
-                            src={imageUrl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${imageUrl}` : ""}
-                            alt="image track upload"
-                            width={250}
-                            height={250}
-                        />
+                        {imageUrl ?
+                            <Image
+                                style={{ height: "100%", width: "100%" }}
+                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${imageUrl}`}
+                                alt="image track upload"
+                                width={250}
+                                height={250}
+                            /> :
+                            <div
+                                style={{
+                                    width: 250,
+                                    height: 250,
+                                    backgroundColor: '#ccc'
+                                }}
+                            ></div>
+                        }
                         <div style={{ padding: "10px" }}>
                             <InputFileUpload
                                 isHandle={true}

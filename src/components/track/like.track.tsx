@@ -5,16 +5,18 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const LikeTrack = ({ track }: {
     track: ITrackTop | undefined;
 }) => {
     const { data: session } = useSession();
+    const route = useRouter();
     const [listTrackLikeByUser, setListTrackLikeByUser] = useState<(ITrackLikedByUser[] | undefined)>()
 
     useEffect(() => {
         fetchLike();
-    }, [])
+    }, [session])
 
     const fetchLike = async () => {
         const res = await sendRequest<IModelPaginate<ITrackLikedByUser>>({
@@ -43,6 +45,16 @@ const LikeTrack = ({ track }: {
                 }
             })
             if (res.statusCode === 201) {
+                await sendRequest<IBackendRes<any>>({
+                    url: `/api/revalidate`,
+                    method: "POST",
+                    queryParams: {
+                        tag: "track-by-id",
+                        secret: "wubangdevRandomString",
+                    }
+                })
+
+                route.refresh();
                 fetchLike();
             }
         }

@@ -46,12 +46,12 @@ const AppFooter = () => {
                         }
                     }}
                 >
-                    {currentTrack._id &&
+                    {(currentTrack._id !== "") &&
                         <>
                             <AudioPlayer
                                 ref={playerRef}
                                 layout="horizontal-reverse"
-                                src={currentTrack.trackUrl ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}` : ""}
+                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
                                 volume={1}
                                 style={{
                                     boxShadow: "unset",

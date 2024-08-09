@@ -14,6 +14,9 @@ const Profile = async ({ params }: { params: { slug: string } }) => {
             pageSize: 100,
         },
         body: { id: params.slug },
+        nextOption: {
+            next: { tags: ['track-by-user'] }
+        }
     })
     return (
         <Container>
