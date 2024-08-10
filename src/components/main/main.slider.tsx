@@ -18,7 +18,6 @@ interface IProps {
 const MainSlider = (props: IProps) => {
     const { data, title } = props;
 
-    const { setCurrentTrack } = useTrackContext() as ITrackContext;
 
 
     const NextArrow = (props: any) => {

@@ -4,24 +4,24 @@ export { };
 declare global {
 
     interface ITrackTop {
-        "_id": string;
-        "title": string;
-        "description": string;
-        "category": string;
-        "imgUrl": string;
-        "trackUrl": string;
-        "countLike": number;
-        "countPlay": number;
-        "uploader": {
-            "_id": string;
-            "email": string;
-            "name": string;
-            "role": string;
-            "type": string;
+        _id: string;
+        title: string;
+        description: string;
+        category: string;
+        imgUrl: string;
+        trackUrl: string;
+        countLike: number;
+        countPlay: number;
+        uploader: {
+            _id: string;
+            email: string;
+            name: string;
+            role: string;
+            type: string;
         },
-        "isDeleted": boolean;
-        "createdAt": string;
-        "updatedAt": string;
+        isDeleted: boolean;
+        createdAt: string;
+        updatedAt: string;
     }
 
     interface IRequest {
@@ -64,6 +64,19 @@ declare global {
         currentTrack: IShareTrack;
         setCurrentTrack: (v: IShareTrack) => void;
     }
+
+    interface IShareToast {
+        messageSnackbar: string;
+        severity: AlertColor | undefined;
+    }
+
+    interface IToastContext {
+        currentToast: IShareToast;
+        setCurrentToast: (v: IShareToast) => void;
+        openToast: boolean;
+        setOpenToast: Dispatch<SetStateAction<boolean>>;
+    }
+
 
     interface IComment {
         _id: string;
@@ -108,5 +121,31 @@ declare global {
         trackUrl: string;
         countLike: number,
         countPlay: number,
+    }
+
+    interface IPlayListInfo {
+        title: string,
+        isPublic: boolean,
+        user: {
+            _id: string;
+            email: string;
+            name: string;
+            role: string;
+            type: string;
+        },
+        tracks: {
+            _id: string;
+            title: string;
+            description: string;
+            category: string;
+            imgUrl: string;
+            trackUrl: string;
+            countLike: number,
+            countPlay: number
+        }[],
+        isDeleted: boolean,
+        _id: string,
+        createdAt: string,
+        updatedAt: string,
     }
 }

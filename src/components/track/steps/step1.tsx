@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import SnackbarProvider from "@/utils/custom.snackbar";
 import { Box, CircularProgress } from "@mui/material";
+import { useToastContext } from "@/lib/toast.info.wrapper";
 
 interface IProps {
     setValue: (v: number) => void;
@@ -16,9 +17,8 @@ interface IProps {
 }
 
 const Step1 = (props: IProps) => {
-    const [open, setOpen] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string>("");
     const { data: session } = useSession();
+    const { setCurrentToast, setOpenToast } = useToastContext() as IToastContext;
     const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
         if (acceptedFiles && acceptedFiles[0]) {
             props.setValue(1);
@@ -43,16 +43,22 @@ const Step1 = (props: IProps) => {
                     }
                 )
                 props.setTrackNameUrl(res.data.data.fileName);
+                setOpenToast(true);
+                setCurrentToast({
+                    //@ts-ignore
+                    messageSnackbar: res.data.message,
+                    severity: "success"
+                })
             } catch (error) {
-                //@ts-ignore
-                setOpen(true);
-                //@ts-ignore
-                setErrorMessage(error?.response?.data?.message)
+                setOpenToast(true);
+                setCurrentToast({
+                    //@ts-ignore
+                    messageSnackbar: error?.response?.data?.message,
+                    severity: "error"
+                })
             }
         }
     }, [session])
-
-
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop,
@@ -92,12 +98,6 @@ const Step1 = (props: IProps) => {
                     </Box>
                 }
             </section>
-            <SnackbarProvider
-                messageSnackbar={errorMessage}
-                open={open}
-                setOpen={setOpen}
-                severity={"error"}
-            />
         </>
     );
 }

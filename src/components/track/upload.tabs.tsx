@@ -72,17 +72,8 @@ const UploadTab = () => {
                     trackNameUrl={trackNameUrl}
                     setTrackName={setTrackName}
                     setValue={setValue}
-                    setMessageSnackbar={setMessageSnackbar}
-                    setOpen={setOpen}
-                    setSeverity={setSeverity}
                 />
             </CustomTabPanel>
-            <SnackbarProvider
-                messageSnackbar={messageSnackbar}
-                open={open}
-                setOpen={setOpen}
-                severity={severity}
-            />
         </Box>
     );
 }

@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { sendRequest } from '@/utils/api';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useToastContext } from '@/lib/toast.info.wrapper';
 
 const LinearProgressWithLabel = (props: LinearProgressProps & { value: number }) => {
     return (
@@ -31,15 +32,12 @@ interface IProps {
     trackNameUrl: string;
     setValue: Dispatch<SetStateAction<number>>;
     setTrackName: Dispatch<SetStateAction<string>>;
-    setOpen: Dispatch<SetStateAction<boolean>>;
-    setSeverity: Dispatch<SetStateAction<AlertColor | undefined>>;
-    setMessageSnackbar: Dispatch<SetStateAction<string>>
 }
 
 const Step2 = (props: IProps) => {
 
     const { percentCompleted, trackName, trackNameUrl,
-        setValue, setTrackName, setSeverity, setMessageSnackbar, setOpen
+        setValue, setTrackName,
     } = props;
 
     const [title, setTitle] = useState<string>("");
@@ -49,6 +47,7 @@ const Step2 = (props: IProps) => {
     const [imageUrl, setImageUrl] = useState<string>("");
     const { data: session } = useSession();
     const route = useRouter();
+    const { setCurrentToast, setOpenToast } = useToastContext() as IToastContext;
 
 
 
@@ -99,9 +98,11 @@ const Step2 = (props: IProps) => {
 
         })
         if (res && res.statusCode === 201) {
-            setSeverity("success");
-            setMessageSnackbar("Create track success!");
-            setOpen(true);
+            setOpenToast(true);
+            setCurrentToast({
+                messageSnackbar: "Create track success!",
+                severity: "success"
+            })
             setValue(0);
             setTrackName("");
             await sendRequest<IBackendRes<any>>({
@@ -115,9 +116,11 @@ const Step2 = (props: IProps) => {
             route.refresh();
 
         } else {
-            setSeverity("error");
-            setMessageSnackbar(res.message.toString());
-            setOpen(true);
+            setOpenToast(true);
+            setCurrentToast({
+                messageSnackbar: res.message.toString(),
+                severity: "error"
+            })
         }
 
     }
