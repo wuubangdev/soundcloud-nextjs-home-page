@@ -9,7 +9,13 @@ import AddTrackToPlayList from "@/components/playlist/add/add.track";
 import { sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import next from "next";
+import { Metadata } from "next";
+
+
+export const metadata: Metadata = {
+    title: 'Playlist',
+    description: 'Description',
+}
 
 const PlayList = async () => {
 

@@ -125,20 +125,12 @@ const AddTrackToPlayList = (props: IProps) => {
                 onClose={handleClose}
             >
                 <DialogTitle
-                    sx={{
-                        paddingY: 2
-                    }}
+                    sx={{ paddingY: 2 }}
                 >
                     Add tracks to playlist:
                 </DialogTitle>
                 <DialogContent
-                    sx={{
-                        minWidth: "600px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
+                    sx={{ minWidth: "600px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", }}
                 >
                     <FormSelectPlayList
                         isPlaylistError={isPlaylistError}

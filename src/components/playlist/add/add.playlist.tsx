@@ -79,6 +79,7 @@ const AddPlayList = () => {
             <Dialog
                 open={open}
                 onClose={handleClose}
+
             >
                 <DialogTitle
                     sx={{
