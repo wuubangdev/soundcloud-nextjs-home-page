@@ -53,6 +53,14 @@ const LikeTrack = ({ track }: {
                         secret: "wubangdevRandomString",
                     }
                 })
+                await sendRequest<IBackendRes<any>>({
+                    url: `/api/revalidate`,
+                    method: "POST",
+                    queryParams: {
+                        tag: "liked-by-user",
+                        secret: "wubangdevRandomString",
+                    }
+                })
 
                 route.refresh();
                 fetchLike();
