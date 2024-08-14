@@ -1,6 +1,6 @@
 'use client'
 import { Alert, AlertColor, Snackbar } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface IProps {
     open: boolean;

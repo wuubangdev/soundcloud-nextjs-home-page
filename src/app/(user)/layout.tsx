@@ -5,8 +5,8 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Sound Cloud',
-  description: 'Sound Cloud Description',
+  title: 'WMP3 Cloud',
+  description: 'WMP3 Description',
 }
 
 const idJsonObject = {

@@ -1,8 +1,13 @@
 
 import CardTrackProfile from "@/components/profile/card.track.profile";
 import { sendRequest } from "@/utils/api";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Container } from "@mui/material";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: 'Profile',
+    description: 'Description',
+}
 
 const Profile = async ({ params }: { params: { slug: string } }) => {
 
